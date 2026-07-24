@@ -413,92 +413,101 @@ function AdminProducts() {
                 className="mt-1 w-full bg-transparent border border-border px-3 py-2 focus:outline-none focus:border-foreground"
               />
             </label>
-            <div className="space-y-2">
-              <span className="text-xs tracking-widest uppercase text-muted-foreground">
-                Fotot e Produktit
-              </span>
-              <p className="text-[10px] text-muted-foreground">
-                Foto e parë përdoret si foto kryesore. Kliko një foto tjetër për ta bërë kryesore.
-              </p>
-              <div className="flex flex-wrap gap-2">
-                {form.images.map((img, i) => (
-                  <div key={img + i} className="relative shrink-0">
-                    <button
-                      type="button"
-                      onClick={() => makeMainImage(i)}
-                      className={`block w-20 h-28 overflow-hidden bg-secondary border ${
-                        i === 0 ? "border-foreground" : "border-border"
-                      }`}
+            <div className="flex items-start gap-3">
+              <div className="flex-1 space-y-2">
+                <span className="text-xs tracking-widest uppercase text-muted-foreground">
+                  Fotot e Produktit
+                </span>
+                <p className="text-[10px] text-muted-foreground">
+                  Foto e parë përdoret si foto kryesore. Kliko një foto tjetër për ta bërë kryesore.
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {form.images.map((img, i) => (
+                    <div key={img + i} className="relative shrink-0">
+                      <button
+                        type="button"
+                        onClick={() => makeMainImage(i)}
+                        className={`block w-20 h-28 overflow-hidden bg-secondary border ${
+                          i === 0 ? "border-foreground" : "border-border"
+                        }`}
+                      >
+                        <img src={img} alt="" className="w-full h-full object-cover" />
+                      </button>
+                      {i === 0 && (
+                        <span className="absolute bottom-0 inset-x-0 bg-foreground/85 text-background text-[8px] tracking-widest uppercase text-center py-0.5">
+                          Kryesore
+                        </span>
+                      )}
+                      <button
+                        type="button"
+                        onClick={() => removeImage(i)}
+                        className="absolute -top-2 -right-2 bg-background border border-border rounded-full p-1 hover:bg-burgundy hover:text-background transition-colors"
+                        aria-label="Hiq foton"
+                      >
+                        <X className="h-3 w-3" />
+                      </button>
+                    </div>
+                  ))}
+                  {Array.from({ length: uploadingCount }).map((_, i) => (
+                    <div
+                      key={"loading" + i}
+                      className="w-20 h-28 bg-secondary border border-dashed border-border grid place-items-center text-[9px] tracking-widest uppercase text-muted-foreground text-center px-1 shrink-0"
                     >
-                      <img src={img} alt="" className="w-full h-full object-cover" />
-                    </button>
-                    {i === 0 && (
-                      <span className="absolute bottom-0 inset-x-0 bg-foreground/85 text-background text-[8px] tracking-widest uppercase text-center py-0.5">
-                        Kryesore
-                      </span>
-                    )}
-                    <button
-                      type="button"
-                      onClick={() => removeImage(i)}
-                      className="absolute -top-2 -right-2 bg-background border border-border rounded-full p-1 hover:bg-burgundy hover:text-background transition-colors"
-                      aria-label="Hiq foton"
-                    >
-                      <X className="h-3 w-3" />
-                    </button>
-                  </div>
-                ))}
-                {Array.from({ length: uploadingCount }).map((_, i) => (
-                  <div
-                    key={"loading" + i}
-                    className="w-20 h-28 bg-secondary border border-dashed border-border grid place-items-center text-[9px] tracking-widest uppercase text-muted-foreground text-center px-1 shrink-0"
+                      Duke ngarkuar...
+                    </div>
+                  ))}
+                  {form.images.length === 0 && uploadingCount === 0 && (
+                    <div className="w-20 h-28 bg-secondary border border-dashed border-border grid place-items-center text-[10px] text-muted-foreground text-center shrink-0">
+                      Nuk ka foto
+                    </div>
+                  )}
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => galleryRef.current?.click()}
+                    className="flex items-center justify-center gap-2 border border-border px-3 py-2 text-xs tracking-widest uppercase hover:bg-secondary transition-colors"
                   >
-                    Duke ngarkuar...
-                  </div>
-                ))}
-                {form.images.length === 0 && uploadingCount === 0 && (
-                  <div className="w-20 h-28 bg-secondary border border-dashed border-border grid place-items-center text-[10px] text-muted-foreground text-center shrink-0">
-                    Nuk ka foto
-                  </div>
-                )}
+                    <Upload className="h-3.5 w-3.5" /> Galeria
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => cameraRef.current?.click()}
+                    className="flex items-center justify-center gap-2 border border-border px-3 py-2 text-xs tracking-widest uppercase hover:bg-secondary transition-colors"
+                  >
+                    <Camera className="h-3.5 w-3.5" /> Kamera
+                  </button>
+                  <input
+                    ref={galleryRef}
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    className="hidden"
+                    onChange={(e) => {
+                      handleFiles(e.target.files);
+                      e.target.value = "";
+                    }}
+                  />
+                  <input
+                    ref={cameraRef}
+                    type="file"
+                    accept="image/*"
+                    capture="environment"
+                    className="hidden"
+                    onChange={(e) => {
+                      handleFiles(e.target.files);
+                      e.target.value = "";
+                    }}
+                  />
+                </div>
               </div>
-              <div className="grid grid-cols-2 gap-2">
-                <button
-                  type="button"
-                  onClick={() => galleryRef.current?.click()}
-                  className="flex items-center justify-center gap-2 border border-border px-3 py-2 text-xs tracking-widest uppercase hover:bg-secondary transition-colors"
-                >
-                  <Upload className="h-3.5 w-3.5" /> Galeria
-                </button>
-                <button
-                  type="button"
-                  onClick={() => cameraRef.current?.click()}
-                  className="flex items-center justify-center gap-2 border border-border px-3 py-2 text-xs tracking-widest uppercase hover:bg-secondary transition-colors"
-                >
-                  <Camera className="h-3.5 w-3.5" /> Kamera
-                </button>
-                <input
-                  ref={galleryRef}
-                  type="file"
-                  accept="image/*"
-                  multiple
-                  className="hidden"
-                  onChange={(e) => {
-                    handleFiles(e.target.files);
-                    e.target.value = "";
-                  }}
-                />
-                <input
-                  ref={cameraRef}
-                  type="file"
-                  accept="image/*"
-                  capture="environment"
-                  className="hidden"
-                  onChange={(e) => {
-                    handleFiles(e.target.files);
-                    e.target.value = "";
-                  }}
-                />
-              </div>
+              <button
+                type="submit"
+                disabled={addProduct.isPending || updateProduct.isPending || uploadingCount > 0}
+                className="shrink-0 self-start bg-foreground text-background px-4 py-2.5 text-xs tracking-widest uppercase hover:bg-caramel transition-colors disabled:opacity-50"
+              >
+                {addProduct.isPending || updateProduct.isPending ? "Duke ruajtur..." : "Ruaj"}
+              </button>
             </div>
             <button
               type="submit"

@@ -2,7 +2,7 @@
 // request to Supabase's REST API so the free-tier project never accumulates
 // 7 days of inactivity and gets auto-paused. Deliberately independent of the
 // TanStack Start app/router so it can't be broken by app-routing changes.
-export function GET(request: Request): Response {
+export async function GET(request: Request): Promise<Response> {
   const cronSecret = process.env.CRON_SECRET;
   if (cronSecret) {
     const auth = request.headers.get("authorization");
@@ -17,11 +17,11 @@ export function GET(request: Request): Response {
     return new Response("Missing VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY", { status: 500 });
   }
 
-  return fetch(`${supabaseUrl}/rest/v1/shipping_rates?select=country&limit=1`, {
+  const res = await fetch(`${supabaseUrl}/rest/v1/shipping_rates?select=country&limit=1`, {
     headers: { apikey: supabaseAnonKey, authorization: `Bearer ${supabaseAnonKey}` },
-  }).then((res) =>
-    res.ok
-      ? new Response("ok", { status: 200 })
-      : new Response(`Supabase ping failed: ${res.status}`, { status: 502 }),
-  );
+  });
+
+  return res.ok
+    ? new Response("ok", { status: 200 })
+    : new Response(`Supabase ping failed: ${res.status}`, { status: 502 });
 }

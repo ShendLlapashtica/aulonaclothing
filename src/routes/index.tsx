@@ -8,7 +8,7 @@ import {
   productsQueryOptions,
   categoriesQueryOptions,
 } from "@/lib/store";
-import heroImage from "@/assets/hero-blue-dress.png";
+import heroImage from "@/assets/hero-outfit.jpg";
 
 export const Route = createFileRoute("/")({
   loader: async ({ context }) => {
@@ -86,7 +86,7 @@ function Home() {
           <div className="order-1 md:order-2 relative aspect-[4/5] md:aspect-auto md:min-h-full bg-taupe overflow-hidden">
             <img
               src={heroImage}
-              alt="Fustan blu i qetë me çarje anësore — koleksioni i verës"
+              alt="Fustan draperi taupe me çarje anësore — koleksioni i verës"
               className="absolute inset-0 h-full w-full object-cover object-top"
             />
             {/* Bottom gradient morph into sand section */}

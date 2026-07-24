@@ -9,9 +9,7 @@ export function SiteFooter() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 py-12 sm:py-14 grid grid-cols-2 md:grid-cols-4 gap-8">
         <div className="col-span-2 md:col-span-1">
           <BrandMark className="text-3xl" />
-          <p className="mt-3 text-sm text-muted-foreground">
-            Modë editoriale për femrën moderne.
-          </p>
+          <p className="mt-3 text-sm text-muted-foreground">Modë editoriale për femrën moderne.</p>
           <div className="flex items-center gap-3 mt-4">
             <a
               href={`https://wa.me/${WHATSAPP_NUMBER}`}
@@ -43,11 +41,31 @@ export function SiteFooter() {
         <div>
           <p className="text-[11px] tracking-widest uppercase mb-3">Dyqani</p>
           <ul className="space-y-2 text-sm text-muted-foreground">
-            <li><Link to="/shop" search={{ filter: "all" }} className="hover:text-caramel">Të gjitha</Link></li>
-            <li><Link to="/shop" search={{ filter: "fustane" }} className="hover:text-caramel">Fustane</Link></li>
-            <li><Link to="/shop" search={{ filter: "sete" }} className="hover:text-caramel">Sete</Link></li>
-            <li><Link to="/shop" search={{ filter: "denim" }} className="hover:text-caramel">Denim</Link></li>
-            <li><Link to="/shop" search={{ filter: "kombinezone" }} className="hover:text-caramel">Kombinezone</Link></li>
+            <li>
+              <Link to="/shop" search={{ filter: "all" }} className="hover:text-caramel">
+                Të gjitha
+              </Link>
+            </li>
+            <li>
+              <Link to="/shop" search={{ filter: "fustane" }} className="hover:text-caramel">
+                Fustane
+              </Link>
+            </li>
+            <li>
+              <Link to="/shop" search={{ filter: "sete" }} className="hover:text-caramel">
+                Sete
+              </Link>
+            </li>
+            <li>
+              <Link to="/shop" search={{ filter: "denim" }} className="hover:text-caramel">
+                Denim
+              </Link>
+            </li>
+            <li>
+              <Link to="/shop" search={{ filter: "kombinezone" }} className="hover:text-caramel">
+                Kombinezone
+              </Link>
+            </li>
           </ul>
         </div>
         <div>
@@ -62,9 +80,7 @@ export function SiteFooter() {
         </div>
         <div className="col-span-2 md:col-span-1">
           <p className="text-[11px] tracking-widest uppercase mb-3">Newsletter</p>
-          <p className="text-sm text-muted-foreground mb-3">
-            Regjistrohu për 10% zbritje.
-          </p>
+          <p className="text-sm text-muted-foreground mb-3">Regjistrohu për 10% zbritje.</p>
           <div className="flex">
             <input
               type="email"
@@ -78,7 +94,14 @@ export function SiteFooter() {
         </div>
       </div>
       <div className="border-t border-border py-5 text-center text-xs text-muted-foreground">
-        © 2026 Aulonaclothing · <Link to="/admin" className="hover:text-caramel">Admin</Link>
+        © 2026 Aulonaclothing ·{" "}
+        <Link to="/politikat" className="hover:text-caramel">
+          Politikat tona
+        </Link>{" "}
+        ·{" "}
+        <Link to="/admin" className="hover:text-caramel">
+          Admin
+        </Link>
       </div>
     </footer>
   );

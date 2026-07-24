@@ -47,6 +47,7 @@ function Shop() {
   const filters = [
     { key: "all", label: "Të Gjitha" },
     { key: "new", label: "Të Reja" },
+    { key: "nen10", label: "Nën 10 €" },
     ...categories.map((c) => ({ key: c.toLowerCase(), label: c })),
     { key: "sale", label: "Zbritje" },
   ];
@@ -54,6 +55,7 @@ function Shop() {
   const filtered = products.filter((p) => {
     if (active === "all") return true;
     if (active === "new") return p.isNew;
+    if (active === "nen10") return p.price < 10;
     if (active === "sale") return p.onSale;
     return p.category.toLowerCase() === active.toLowerCase();
   });

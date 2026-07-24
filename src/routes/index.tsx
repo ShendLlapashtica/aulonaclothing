@@ -56,11 +56,11 @@ function Home() {
                 Koleksioni i Verës · 2026
               </p>
               <h1 className="font-serif text-4xl sm:text-5xl md:text-6xl leading-[1.05]">
-                E rrjedhshme,
+                Plans for tonight?
                 <span className="font-script text-caramel block text-5xl sm:text-6xl md:text-7xl mt-2">
-                  romantike
+                  Find your perfect outfit
                 </span>
-                <span className="block mt-2">e përjetshme.</span>
+                <span className="block mt-2">with us.</span>
               </h1>
               <p className="mt-5 sm:mt-6 text-sm sm:text-base text-muted-foreground leading-relaxed">
                 Copa të përzgjedhura me kujdes — nga saten i pastër te draperi që rrjedh si valë,
@@ -97,6 +97,36 @@ function Home() {
               Aulona
             </span>
           </div>
+        </div>
+      </section>
+
+      {/* Quick picks */}
+      <section className="mx-auto max-w-7xl px-4 sm:px-6 pt-10 sm:pt-14">
+        <div className="grid grid-cols-2 gap-3 sm:gap-4">
+          <Link
+            to="/shop"
+            search={{ filter: "nen10" }}
+            className="group bg-secondary aspect-[16/9] sm:aspect-[2/1] flex items-end justify-between p-4 sm:p-6 relative overflow-hidden"
+          >
+            <span className="font-serif text-xl sm:text-2xl md:text-3xl relative z-10 group-hover:text-caramel transition-colors">
+              Nën 10 €
+            </span>
+            <span className="text-[9px] sm:text-[10px] tracking-widest uppercase text-muted-foreground">
+              Shiko →
+            </span>
+          </Link>
+          <Link
+            to="/shop"
+            search={{ filter: "new" }}
+            className="group bg-secondary aspect-[16/9] sm:aspect-[2/1] flex items-end justify-between p-4 sm:p-6 relative overflow-hidden"
+          >
+            <span className="font-serif text-xl sm:text-2xl md:text-3xl relative z-10 group-hover:text-caramel transition-colors">
+              Arritje të reja
+            </span>
+            <span className="text-[9px] sm:text-[10px] tracking-widest uppercase text-muted-foreground">
+              Shiko →
+            </span>
+          </Link>
         </div>
       </section>
 

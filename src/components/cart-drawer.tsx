@@ -79,7 +79,7 @@ export function CartDrawer() {
                 return (
                   <li key={`${i.productId}-${i.size}`} className="flex gap-4">
                     <img
-                      src={p.image}
+                      src={p.images[0]}
                       alt={p.name}
                       className="w-20 h-28 object-cover bg-secondary"
                     />

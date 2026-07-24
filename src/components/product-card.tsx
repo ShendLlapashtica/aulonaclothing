@@ -7,7 +7,9 @@ import { toast } from "sonner";
 
 export function ProductCard({ product }: { product: Product }) {
   const { add } = useCart();
-  const [size, setSize] = useState<string | null>(product.sizes.length === 1 ? product.sizes[0] : null);
+  const [size, setSize] = useState<string | null>(
+    product.sizes.length === 1 ? product.sizes[0] : null,
+  );
   const [wished, setWished] = useState(false);
 
   const handleAdd = (e: React.MouseEvent) => {
@@ -42,7 +44,7 @@ export function ProductCard({ product }: { product: Product }) {
           className="absolute inset-0 z-0 block"
         >
           <img
-            src={product.image}
+            src={product.images[0]}
             alt={product.name}
             loading="lazy"
             className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.06]"
@@ -119,7 +121,9 @@ export function ProductCard({ product }: { product: Product }) {
           </h3>
         </Link>
         <div className="flex items-baseline gap-2">
-          <span className={`text-sm ${product.onSale ? "text-burgundy font-medium" : "font-medium"}`}>
+          <span
+            className={`text-sm ${product.onSale ? "text-burgundy font-medium" : "font-medium"}`}
+          >
             {product.price.toFixed(2)} €
           </span>
           {product.originalPrice && (
@@ -132,7 +136,10 @@ export function ProductCard({ product }: { product: Product }) {
           {product.sizes.map((s) => (
             <button
               key={s}
-              onClick={(e) => { e.preventDefault(); setSize(s); }}
+              onClick={(e) => {
+                e.preventDefault();
+                setSize(s);
+              }}
               className={`min-w-8 px-2 h-7 text-[11px] border rounded-sm transition-colors ${
                 size === s
                   ? "border-foreground bg-foreground text-background"

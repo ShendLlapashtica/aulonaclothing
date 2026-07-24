@@ -29,12 +29,16 @@ export function SiteHeader() {
   const rightNav = navItems.slice(half);
 
   const products = useProducts();
-  const results = q.trim().length > 0
-    ? products.filter((p) =>
-        p.name.toLowerCase().includes(q.toLowerCase()) ||
-        p.category.toLowerCase().includes(q.toLowerCase())
-      ).slice(0, 6)
-    : [];
+  const results =
+    q.trim().length > 0
+      ? products
+          .filter(
+            (p) =>
+              p.name.toLowerCase().includes(q.toLowerCase()) ||
+              p.category.toLowerCase().includes(q.toLowerCase()),
+          )
+          .slice(0, 6)
+      : [];
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -73,7 +77,12 @@ export function SiteHeader() {
       <div className="mx-auto max-w-7xl px-3 sm:px-6 grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-2 sm:gap-4 py-3 sm:py-5">
         <div className="hidden md:flex items-center gap-6 text-[13px] tracking-wide uppercase">
           {leftNav.map((l) => (
-            <Link key={l.key} to="/shop" search={{ filter: l.filter }} className="hover:text-caramel transition-colors">
+            <Link
+              key={l.key}
+              to="/shop"
+              search={{ filter: l.filter }}
+              className="hover:text-caramel transition-colors"
+            >
               {l.label}
             </Link>
           ))}
@@ -84,7 +93,12 @@ export function SiteHeader() {
         <div className="flex items-center justify-end gap-3 sm:gap-5">
           <div className="hidden md:flex items-center gap-6 text-[13px] tracking-wide uppercase mr-2">
             {rightNav.map((l) => (
-              <Link key={l.key} to="/shop" search={{ filter: l.filter }} className="hover:text-caramel transition-colors">
+              <Link
+                key={l.key}
+                to="/shop"
+                search={{ filter: l.filter }}
+                className="hover:text-caramel transition-colors"
+              >
                 {l.label}
               </Link>
             ))}
@@ -147,7 +161,11 @@ export function SiteHeader() {
                 }}
                 className="w-full flex items-center gap-3 p-2 hover:bg-secondary/60 text-left transition-colors"
               >
-                <img src={p.image} alt="" className="w-12 h-16 object-cover bg-secondary shrink-0" />
+                <img
+                  src={p.images[0]}
+                  alt=""
+                  className="w-12 h-16 object-cover bg-secondary shrink-0"
+                />
                 <div className="min-w-0 flex-1">
                   <p className="font-serif text-sm truncate">{p.name}</p>
                   <p className="text-[11px] text-muted-foreground">
@@ -167,7 +185,12 @@ export function SiteHeader() {
 
       <nav className="md:hidden flex items-center justify-center gap-4 pb-3 text-[10px] sm:text-[11px] tracking-widest uppercase overflow-x-auto px-3">
         {navItems.map((l) => (
-          <Link key={l.key} to="/shop" search={{ filter: l.filter }} className="hover:text-caramel transition-colors whitespace-nowrap">
+          <Link
+            key={l.key}
+            to="/shop"
+            search={{ filter: l.filter }}
+            className="hover:text-caramel transition-colors whitespace-nowrap"
+          >
             {l.label}
           </Link>
         ))}

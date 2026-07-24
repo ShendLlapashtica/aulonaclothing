@@ -33,15 +33,15 @@ function AdminProducts() {
   const addCategory = useAddCategory();
   const removeCategory = useRemoveCategory();
   const [showModal, setShowModal] = useState(false);
-  const [uploading, setUploading] = useState(false);
-  const [preview, setPreview] = useState("");
+  const [uploadingCount, setUploadingCount] = useState(0);
+  const [urlInput, setUrlInput] = useState("");
   const [form, setForm] = useState({
     name: "",
     category: categories[0] ?? "",
     price: "",
     stock: "",
     sizes: "",
-    image: "",
+    images: [] as string[],
   });
   const [newCat, setNewCat] = useState("");
   const galleryRef = useRef<HTMLInputElement>(null);
@@ -54,32 +54,53 @@ function AdminProducts() {
       price: "",
       stock: "",
       sizes: "",
-      image: "",
+      images: [],
     });
-    setPreview("");
+    setUrlInput("");
   };
 
-  const handleFile = async (file: File | undefined) => {
-    if (!file) return;
-    if (!file.type.startsWith("image/")) {
-      toast("Të lutem ngarko një foto");
-      return;
-    }
-    if (file.size > 5 * 1024 * 1024) {
-      toast("Fotoja duhet të jetë nën 5MB");
-      return;
-    }
-    setPreview(URL.createObjectURL(file));
-    setUploading(true);
-    try {
-      const url = await uploadProductImage(file);
-      setForm((f) => ({ ...f, image: url }));
-    } catch {
-      toast("Ngarkimi i fotos dështoi");
-      setPreview("");
-    } finally {
-      setUploading(false);
-    }
+  const handleFiles = async (fileList: FileList | null) => {
+    const files = Array.from(fileList ?? []);
+    await Promise.all(
+      files.map(async (file) => {
+        if (!file.type.startsWith("image/")) {
+          toast(`"${file.name}" nuk është foto`);
+          return;
+        }
+        if (file.size > 5 * 1024 * 1024) {
+          toast(`"${file.name}" është mbi 5MB`);
+          return;
+        }
+        setUploadingCount((n) => n + 1);
+        try {
+          const url = await uploadProductImage(file);
+          setForm((f) => ({ ...f, images: [...f.images, url] }));
+        } catch {
+          toast(`Ngarkimi i "${file.name}" dështoi`);
+        } finally {
+          setUploadingCount((n) => n - 1);
+        }
+      }),
+    );
+  };
+
+  const addImageUrl = () => {
+    const url = urlInput.trim();
+    if (!url) return;
+    setForm((f) => ({ ...f, images: [...f.images, url] }));
+    setUrlInput("");
+  };
+
+  const removeImage = (index: number) => {
+    setForm((f) => ({ ...f, images: f.images.filter((_, i) => i !== index) }));
+  };
+
+  const makeMainImage = (index: number) => {
+    setForm((f) => {
+      const images = [...f.images];
+      const [chosen] = images.splice(index, 1);
+      return { ...f, images: [chosen, ...images] };
+    });
   };
 
   const handleAdd = async (e: React.FormEvent) => {
@@ -95,7 +116,7 @@ function AdminProducts() {
         .split(",")
         .map((s) => s.trim())
         .filter(Boolean),
-      image: form.image.trim() || products[0]?.image || "",
+      images: form.images.length > 0 ? form.images : (products[0]?.images ?? []),
       isNew: true,
     };
     try {
@@ -230,7 +251,7 @@ function AdminProducts() {
             {products.map((p) => (
               <tr key={p.id} className="hover:bg-secondary/40">
                 <td className="px-5 py-3">
-                  <img src={p.image} alt="" className="w-10 h-14 object-cover bg-secondary" />
+                  <img src={p.images[0]} alt="" className="w-10 h-14 object-cover bg-secondary" />
                 </td>
                 <td className="px-5 py-3 font-medium">{p.name}</td>
                 <td className="px-5 py-3 text-muted-foreground">{p.category}</td>
@@ -345,87 +366,115 @@ function AdminProducts() {
             </label>
             <div className="space-y-2">
               <span className="text-xs tracking-widest uppercase text-muted-foreground">
-                Fotoja e Produktit
+                Fotot e Produktit
               </span>
-              <div className="flex items-start gap-3">
-                {preview || form.image ? (
-                  <div className="relative shrink-0">
-                    <img
-                      src={preview || form.image}
-                      alt="preview"
-                      className="w-20 h-28 object-cover bg-secondary border border-border"
-                    />
-                    {uploading && (
-                      <div className="absolute inset-0 bg-background/70 grid place-items-center text-[9px] tracking-widest uppercase text-muted-foreground text-center px-1">
-                        Duke ngarkuar...
-                      </div>
+              <p className="text-[10px] text-muted-foreground">
+                Foto e parë përdoret si foto kryesore. Kliko një foto tjetër për ta bërë kryesore.
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {form.images.map((img, i) => (
+                  <div key={img + i} className="relative shrink-0">
+                    <button
+                      type="button"
+                      onClick={() => makeMainImage(i)}
+                      className={`block w-20 h-28 overflow-hidden bg-secondary border ${
+                        i === 0 ? "border-foreground" : "border-border"
+                      }`}
+                    >
+                      <img src={img} alt="" className="w-full h-full object-cover" />
+                    </button>
+                    {i === 0 && (
+                      <span className="absolute bottom-0 inset-x-0 bg-foreground/85 text-background text-[8px] tracking-widest uppercase text-center py-0.5">
+                        Kryesore
+                      </span>
                     )}
                     <button
                       type="button"
-                      onClick={() => {
-                        setForm({ ...form, image: "" });
-                        setPreview("");
-                      }}
+                      onClick={() => removeImage(i)}
                       className="absolute -top-2 -right-2 bg-background border border-border rounded-full p-1 hover:bg-burgundy hover:text-background transition-colors"
                       aria-label="Hiq foton"
                     >
                       <X className="h-3 w-3" />
                     </button>
                   </div>
-                ) : (
+                ))}
+                {Array.from({ length: uploadingCount }).map((_, i) => (
+                  <div
+                    key={"loading" + i}
+                    className="w-20 h-28 bg-secondary border border-dashed border-border grid place-items-center text-[9px] tracking-widest uppercase text-muted-foreground text-center px-1 shrink-0"
+                  >
+                    Duke ngarkuar...
+                  </div>
+                ))}
+                {form.images.length === 0 && uploadingCount === 0 && (
                   <div className="w-20 h-28 bg-secondary border border-dashed border-border grid place-items-center text-[10px] text-muted-foreground text-center shrink-0">
                     Nuk ka foto
                   </div>
                 )}
-                <div className="flex-1 grid grid-cols-2 gap-2">
-                  <button
-                    type="button"
-                    onClick={() => galleryRef.current?.click()}
-                    className="flex items-center justify-center gap-2 border border-border px-3 py-2 text-xs tracking-widest uppercase hover:bg-secondary transition-colors"
-                  >
-                    <Upload className="h-3.5 w-3.5" /> Galeria
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => cameraRef.current?.click()}
-                    className="flex items-center justify-center gap-2 border border-border px-3 py-2 text-xs tracking-widest uppercase hover:bg-secondary transition-colors"
-                  >
-                    <Camera className="h-3.5 w-3.5" /> Kamera
-                  </button>
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  type="button"
+                  onClick={() => galleryRef.current?.click()}
+                  className="flex items-center justify-center gap-2 border border-border px-3 py-2 text-xs tracking-widest uppercase hover:bg-secondary transition-colors"
+                >
+                  <Upload className="h-3.5 w-3.5" /> Galeria
+                </button>
+                <button
+                  type="button"
+                  onClick={() => cameraRef.current?.click()}
+                  className="flex items-center justify-center gap-2 border border-border px-3 py-2 text-xs tracking-widest uppercase hover:bg-secondary transition-colors"
+                >
+                  <Camera className="h-3.5 w-3.5" /> Kamera
+                </button>
+                <input
+                  ref={galleryRef}
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  className="hidden"
+                  onChange={(e) => {
+                    handleFiles(e.target.files);
+                    e.target.value = "";
+                  }}
+                />
+                <input
+                  ref={cameraRef}
+                  type="file"
+                  accept="image/*"
+                  capture="environment"
+                  className="hidden"
+                  onChange={(e) => {
+                    handleFiles(e.target.files);
+                    e.target.value = "";
+                  }}
+                />
+                <div className="col-span-2 flex gap-2">
                   <input
-                    ref={galleryRef}
-                    type="file"
-                    accept="image/*"
-                    className="hidden"
-                    onChange={(e) => handleFile(e.target.files?.[0])}
-                  />
-                  <input
-                    ref={cameraRef}
-                    type="file"
-                    accept="image/*"
-                    capture="environment"
-                    className="hidden"
-                    onChange={(e) => handleFile(e.target.files?.[0])}
-                  />
-                  <input
-                    value={
-                      form.image.startsWith("blob:") || form.image.startsWith("data:")
-                        ? ""
-                        : form.image
-                    }
-                    onChange={(e) => {
-                      setForm({ ...form, image: e.target.value });
-                      setPreview("");
+                    value={urlInput}
+                    onChange={(e) => setUrlInput(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        addImageUrl();
+                      }
                     }}
-                    placeholder="ose ngjit URL https://..."
-                    className="col-span-2 mt-1 w-full bg-transparent border border-border px-3 py-2 text-xs focus:outline-none focus:border-foreground"
+                    placeholder="ose ngjit URL https://... dhe shtyp Enter"
+                    className="flex-1 bg-transparent border border-border px-3 py-2 text-xs focus:outline-none focus:border-foreground"
                   />
+                  <button
+                    type="button"
+                    onClick={addImageUrl}
+                    className="border border-border px-3 text-xs tracking-widest uppercase hover:bg-secondary transition-colors"
+                  >
+                    Shto
+                  </button>
                 </div>
               </div>
             </div>
             <button
               type="submit"
-              disabled={addProduct.isPending || uploading}
+              disabled={addProduct.isPending || uploadingCount > 0}
               className="w-full bg-foreground text-background py-3 text-xs tracking-widest uppercase hover:bg-caramel transition-colors mt-2 disabled:opacity-50"
             >
               {addProduct.isPending ? "Duke ruajtur..." : "Ruaj Produktin"}

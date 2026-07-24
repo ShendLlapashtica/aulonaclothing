@@ -17,7 +17,7 @@ type ProductRow = {
   price: number;
   original_price: number | null;
   sizes: string[];
-  image: string;
+  images: string[];
   stock: number;
   is_new: boolean;
   on_sale: boolean;
@@ -31,7 +31,7 @@ function rowToProduct(row: ProductRow): Product {
     price: Number(row.price),
     originalPrice: row.original_price != null ? Number(row.original_price) : undefined,
     sizes: row.sizes,
-    image: row.image,
+    images: row.images,
     stock: row.stock,
     isNew: row.is_new,
     onSale: row.on_sale,
@@ -46,7 +46,7 @@ function productToRow(p: Product) {
     price: p.price,
     original_price: p.originalPrice ?? null,
     sizes: p.sizes,
-    image: p.image,
+    images: p.images,
     stock: p.stock,
     is_new: p.isNew ?? false,
     on_sale: p.onSale ?? false,

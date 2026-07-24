@@ -27,7 +27,7 @@ create table if not exists public.products (
   price numeric not null,
   original_price numeric,
   sizes text[] not null default '{}',
-  image text not null default '',
+  images text[] not null default '{}',
   stock integer not null default 0,
   is_new boolean not null default false,
   on_sale boolean not null default false,

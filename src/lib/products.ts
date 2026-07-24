@@ -5,7 +5,7 @@ export type Product = {
   price: number;
   originalPrice?: number;
   sizes: string[];
-  image: string;
+  images: string[];
   stock: number;
   isNew?: boolean;
   onSale?: boolean;

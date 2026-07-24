@@ -98,7 +98,7 @@ function Overview() {
             {lowStock.map((p) => (
               <div key={p.id} className="px-5 py-3 flex items-center gap-3">
                 <img
-                  src={p.image}
+                  src={p.images[0]}
                   alt=""
                   className="w-10 h-14 object-cover bg-secondary shrink-0"
                 />

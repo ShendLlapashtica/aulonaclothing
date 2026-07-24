@@ -168,7 +168,7 @@ function Home() {
       {editorial && (
         <section className="bg-taupe">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 py-20 grid md:grid-cols-2 gap-12 items-center">
-            <img src={editorial.image} alt="" className="aspect-[3/4] object-cover w-full" />
+            <img src={editorial.images[0]} alt="" className="aspect-[3/4] object-cover w-full" />
             <div>
               <p className="text-[11px] tracking-[0.3em] uppercase text-muted-foreground">
                 Editoriale

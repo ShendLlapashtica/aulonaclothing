@@ -43,8 +43,8 @@ export const Route = createFileRoute("/product/$id")({
         { name: "description", content: desc },
         { property: "og:title", content: title },
         { property: "og:description", content: desc },
-        { property: "og:image", content: product.image },
-        { name: "twitter:image", content: product.image },
+        { property: "og:image", content: product.images[0] },
+        { name: "twitter:image", content: product.images[0] },
         { name: "twitter:card", content: "summary_large_image" },
         { property: "og:type", content: "product" },
       ],
@@ -90,6 +90,7 @@ function ProductPage() {
   const [size, setSize] = useState<string | null>(
     product.sizes.length === 1 ? product.sizes[0] : null,
   );
+  const [activeImage, setActiveImage] = useState(0);
 
   const related = allProducts
     .filter((p) => p.id !== product.id && p.category === product.category)
@@ -123,9 +124,33 @@ function ProductPage() {
         </nav>
 
         <div className="grid md:grid-cols-2 gap-6 md:gap-12">
-          {/* Image */}
-          <div className="aspect-[3/4] bg-secondary overflow-hidden">
-            <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
+          {/* Images */}
+          <div>
+            <div className="aspect-[3/4] bg-secondary overflow-hidden">
+              <img
+                src={product.images[activeImage] ?? product.images[0]}
+                alt={product.name}
+                className="w-full h-full object-cover"
+              />
+            </div>
+            {product.images.length > 1 && (
+              <div className="mt-3 grid grid-cols-5 gap-2">
+                {product.images.map((img, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setActiveImage(i)}
+                    aria-label={`Foto ${i + 1}`}
+                    className={`aspect-[3/4] bg-secondary overflow-hidden border transition-colors ${
+                      i === activeImage
+                        ? "border-foreground"
+                        : "border-transparent hover:border-border"
+                    }`}
+                  >
+                    <img src={img} alt="" className="w-full h-full object-cover" />
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Details */}
@@ -346,7 +371,7 @@ function ProductPage() {
               >
                 <div className="aspect-[3/4] bg-secondary overflow-hidden">
                   <img
-                    src={r.image}
+                    src={r.images[0]}
                     alt={r.name}
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                   />

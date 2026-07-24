@@ -62,10 +62,6 @@ function Home() {
                 </span>
                 <span className="block mt-2">with us.</span>
               </h1>
-              <p className="mt-5 sm:mt-6 text-sm sm:text-base text-muted-foreground leading-relaxed">
-                Copa të përzgjedhura me kujdes — nga saten i pastër te draperi që rrjedh si valë,
-                për një pamje elegante në çdo rast.
-              </p>
               <div className="mt-6 sm:mt-8 flex flex-wrap gap-3">
                 <Link
                   to="/shop"

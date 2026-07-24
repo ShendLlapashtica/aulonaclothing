@@ -37,7 +37,6 @@ function AdminProducts() {
   const [showModal, setShowModal] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [uploadingCount, setUploadingCount] = useState(0);
-  const [urlInput, setUrlInput] = useState("");
   const [form, setForm] = useState({
     name: "",
     category: categories[0] ?? "",
@@ -59,7 +58,6 @@ function AdminProducts() {
       sizes: "",
       images: [],
     });
-    setUrlInput("");
     setEditingId(null);
   };
 
@@ -99,13 +97,6 @@ function AdminProducts() {
         }
       }),
     );
-  };
-
-  const addImageUrl = () => {
-    const url = urlInput.trim();
-    if (!url) return;
-    setForm((f) => ({ ...f, images: [...f.images, url] }));
-    setUrlInput("");
   };
 
   const removeImage = (index: number) => {
@@ -336,7 +327,7 @@ function AdminProducts() {
           <form
             onSubmit={handleSubmit}
             onClick={(e) => e.stopPropagation()}
-            className="bg-background w-full max-w-lg p-8 space-y-4"
+            className="bg-background w-full max-w-lg p-8 space-y-4 max-h-[92vh] overflow-y-auto"
           >
             <div className="flex items-start justify-between">
               <div>
@@ -507,20 +498,6 @@ function AdminProducts() {
                     e.target.value = "";
                   }}
                 />
-                <div className="col-span-2">
-                  <input
-                    value={urlInput}
-                    onChange={(e) => setUrlInput(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        e.preventDefault();
-                        addImageUrl();
-                      }
-                    }}
-                    placeholder="ose ngjit URL https://... dhe shtyp Enter"
-                    className="w-full bg-transparent border border-border px-3 py-2 text-xs focus:outline-none focus:border-foreground"
-                  />
-                </div>
               </div>
             </div>
             <button

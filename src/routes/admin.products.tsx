@@ -3,6 +3,7 @@ import { useRef, useState } from "react";
 import {
   useProducts,
   useAddProduct,
+  useUpdateProduct,
   useRemoveProduct,
   useCategories,
   useAddCategory,
@@ -29,10 +30,12 @@ function AdminProducts() {
   const products = useProducts();
   const categories = useCategories();
   const addProduct = useAddProduct();
+  const updateProduct = useUpdateProduct();
   const removeProduct = useRemoveProduct();
   const addCategory = useAddCategory();
   const removeCategory = useRemoveCategory();
   const [showModal, setShowModal] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
   const [uploadingCount, setUploadingCount] = useState(0);
   const [urlInput, setUrlInput] = useState("");
   const [form, setForm] = useState({
@@ -57,6 +60,20 @@ function AdminProducts() {
       images: [],
     });
     setUrlInput("");
+    setEditingId(null);
+  };
+
+  const startEdit = (p: Product) => {
+    setEditingId(p.id);
+    setForm({
+      name: p.name,
+      category: p.category,
+      price: String(p.price),
+      stock: String(p.stock),
+      sizes: p.sizes.join(", "),
+      images: p.images,
+    });
+    setShowModal(true);
   };
 
   const handleFiles = async (fileList: FileList | null) => {
@@ -103,29 +120,50 @@ function AdminProducts() {
     });
   };
 
-  const handleAdd = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.name || !form.price) return;
-    const newProduct: Product = {
-      id: `aul-${Date.now()}`,
-      name: form.name,
-      category: form.category || categories[0] || "Të Tjera",
-      price: parseFloat(form.price),
-      stock: parseInt(form.stock) || 0,
-      sizes: form.sizes
-        .split(",")
-        .map((s) => s.trim())
-        .filter(Boolean),
-      images: form.images.length > 0 ? form.images : (products[0]?.images ?? []),
-      isNew: true,
-    };
+    const sizes = form.sizes
+      .split(",")
+      .map((s) => s.trim())
+      .filter(Boolean);
+
     try {
-      await addProduct.mutateAsync(newProduct);
+      if (editingId) {
+        await updateProduct.mutateAsync({
+          id: editingId,
+          patch: {
+            name: form.name,
+            category: form.category || categories[0] || "Të Tjera",
+            price: parseFloat(form.price),
+            stock: parseInt(form.stock) || 0,
+            sizes,
+            images: form.images,
+          },
+        });
+        toast("Produkti u përditësua");
+      } else {
+        const newProduct: Product = {
+          id: `aul-${Date.now()}`,
+          name: form.name,
+          category: form.category || categories[0] || "Të Tjera",
+          price: parseFloat(form.price),
+          stock: parseInt(form.stock) || 0,
+          sizes,
+          images: form.images.length > 0 ? form.images : (products[0]?.images ?? []),
+          isNew: true,
+        };
+        await addProduct.mutateAsync(newProduct);
+        toast("Produkti u shtua me sukses");
+      }
       resetForm();
       setShowModal(false);
-      toast("Produkti u shtua me sukses");
     } catch {
-      toast("Produkti nuk u shtua, provoni përsëri");
+      toast(
+        editingId
+          ? "Përditësimi dështoi, provoni përsëri"
+          : "Produkti nuk u shtua, provoni përsëri",
+      );
     }
   };
 
@@ -178,7 +216,10 @@ function AdminProducts() {
           <h1 className="font-serif text-3xl sm:text-4xl mt-2">Produktet</h1>
         </div>
         <button
-          onClick={() => setShowModal(true)}
+          onClick={() => {
+            resetForm();
+            setShowModal(true);
+          }}
           className="bg-foreground text-background px-4 sm:px-6 py-3 text-xs tracking-widest uppercase hover:bg-caramel transition-colors inline-flex items-center gap-2"
         >
           <Plus className="h-4 w-4" /> Shto Produkt
@@ -262,7 +303,11 @@ function AdminProducts() {
                 </td>
                 <td className="px-5 py-3">
                   <div className="flex items-center justify-end gap-2">
-                    <button className="p-2 hover:bg-secondary" aria-label="Ndrysho">
+                    <button
+                      onClick={() => startEdit(p)}
+                      className="p-2 hover:bg-secondary"
+                      aria-label="Ndrysho"
+                    >
                       <Pencil className="h-3.5 w-3.5" />
                     </button>
                     <button
@@ -283,19 +328,32 @@ function AdminProducts() {
       {showModal && (
         <div
           className="fixed inset-0 z-50 bg-foreground/40 backdrop-blur-sm grid place-items-center p-4"
-          onClick={() => setShowModal(false)}
+          onClick={() => {
+            resetForm();
+            setShowModal(false);
+          }}
         >
           <form
-            onSubmit={handleAdd}
+            onSubmit={handleSubmit}
             onClick={(e) => e.stopPropagation()}
             className="bg-background w-full max-w-lg p-8 space-y-4"
           >
             <div className="flex items-start justify-between">
               <div>
-                <p className="text-[11px] tracking-[0.3em] uppercase text-muted-foreground">Ri</p>
-                <h2 className="font-serif text-3xl mt-1">Shto Produkt</h2>
+                <p className="text-[11px] tracking-[0.3em] uppercase text-muted-foreground">
+                  {editingId ? "Ndrysho" : "Ri"}
+                </p>
+                <h2 className="font-serif text-3xl mt-1">
+                  {editingId ? "Ndrysho Produktin" : "Shto Produkt"}
+                </h2>
               </div>
-              <button type="button" onClick={() => setShowModal(false)}>
+              <button
+                type="button"
+                onClick={() => {
+                  resetForm();
+                  setShowModal(false);
+                }}
+              >
                 <X className="h-5 w-5" />
               </button>
             </div>
@@ -474,10 +532,16 @@ function AdminProducts() {
             </div>
             <button
               type="submit"
-              disabled={addProduct.isPending || uploadingCount > 0}
+              disabled={addProduct.isPending || updateProduct.isPending || uploadingCount > 0}
               className="w-full bg-foreground text-background py-3 text-xs tracking-widest uppercase hover:bg-caramel transition-colors mt-2 disabled:opacity-50"
             >
-              {addProduct.isPending ? "Duke ruajtur..." : "Ruaj Produktin"}
+              {addProduct.isPending || updateProduct.isPending
+                ? "Duke ruajtur..."
+                : uploadingCount > 0
+                  ? "Duke pritur foto..."
+                  : editingId
+                    ? "Ruaj Ndryshimet"
+                    : "Shto Produkt"}
             </button>
           </form>
         </div>

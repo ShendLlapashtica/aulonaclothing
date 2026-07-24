@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
-import { useProducts, productsQueryOptions, WHATSAPP_NUMBER } from "@/lib/store";
+import { useProducts, productsQueryOptions } from "@/lib/store";
 import { useCart } from "@/lib/cart-store";
 import { toast } from "sonner";
 
@@ -216,18 +216,6 @@ function ProductPage() {
                 <Heart className="h-4 w-4" />
               </button>
             </div>
-
-            <a
-              href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
-                `Përshëndetje! Jam i/e interesuar për "${product.name}" (${product.price.toFixed(2)} €).`,
-              )}`}
-              target="_blank"
-              rel="noreferrer"
-              className="w-full inline-flex items-center justify-center gap-2 border border-[#25D366] text-[#128C7E] hover:bg-[#25D366] hover:text-white py-3 text-xs tracking-widest uppercase transition-colors"
-            >
-              <MessageCircle className="h-4 w-4" />
-              Porosit përmes WhatsApp
-            </a>
 
             <div className="grid grid-cols-2 gap-3 pt-4 border-t border-border">
               <div className="flex items-start gap-2">

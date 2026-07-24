@@ -13,6 +13,11 @@ create table if not exists public.categories (
   sort_order bigint not null default 0
 );
 
+create table if not exists public.site_texts (
+  key text primary key,
+  value text not null
+);
+
 create table if not exists public.shipping_rates (
   country text primary key,
   label text not null,
@@ -72,6 +77,7 @@ create table if not exists public.order_line_items (
 -- ─────────────────────────────────────────────────────────────
 
 alter table public.categories enable row level security;
+alter table public.site_texts enable row level security;
 alter table public.shipping_rates enable row level security;
 alter table public.products enable row level security;
 alter table public.orders enable row level security;
@@ -82,6 +88,13 @@ create policy "categories_public_read" on public.categories
   for select to anon, authenticated using (true);
 drop policy if exists "categories_admin_write" on public.categories;
 create policy "categories_admin_write" on public.categories
+  for all to authenticated using (true) with check (true);
+
+drop policy if exists "site_texts_public_read" on public.site_texts;
+create policy "site_texts_public_read" on public.site_texts
+  for select to anon, authenticated using (true);
+drop policy if exists "site_texts_admin_write" on public.site_texts;
+create policy "site_texts_admin_write" on public.site_texts
   for all to authenticated using (true) with check (true);
 
 drop policy if exists "shipping_rates_public_read" on public.shipping_rates;
@@ -151,6 +164,16 @@ create policy "product_images_admin_delete" on storage.objects
 insert into public.categories (name, sort_order) values
   ('Fustane', 0), ('Sete', 1), ('Denim', 2), ('Bluza', 3), ('Kombinezone', 4), ('Pantallona', 5)
 on conflict (name) do nothing;
+
+insert into public.site_texts (key, value) values
+  ('hero_eyebrow', 'Koleksioni i Verës · 2026'),
+  ('hero_line1', 'Plans for tonight?'),
+  ('hero_accent', 'Find your perfect outfit'),
+  ('hero_line3', 'with us.'),
+  ('editorial_heading', 'Elegancë e artizanuar pa përpjekje.'),
+  ('editorial_body', 'Çdo copë kalon nëpër duart tona përpara se të mbërrijë tek ju. Pëlhurat e zgjedhura, prerjet e menduara dhe detajet e vogla janë ato që bëjnë Aulonaclothing.'),
+  ('footer_tagline', 'Modë editoriale për femrën moderne.')
+on conflict (key) do nothing;
 
 insert into public.shipping_rates (country, label, flag, price) values
   ('XK', 'Kosovë', '🇽🇰', 0),

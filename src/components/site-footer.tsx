@@ -1,15 +1,16 @@
 import { Link } from "@tanstack/react-router";
 import { BrandMark } from "@/components/brand-mark";
 import { Instagram, Mail, MessageCircle } from "lucide-react";
-import { WHATSAPP_DISPLAY, WHATSAPP_NUMBER } from "@/lib/store";
+import { WHATSAPP_DISPLAY, WHATSAPP_NUMBER, useSiteTexts } from "@/lib/store";
 
 export function SiteFooter() {
+  const texts = useSiteTexts();
   return (
     <footer className="border-t border-border bg-background mt-16">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 py-12 sm:py-14 grid grid-cols-2 md:grid-cols-4 gap-8">
         <div className="col-span-2 md:col-span-1">
           <BrandMark className="text-3xl" />
-          <p className="mt-3 text-sm text-muted-foreground">Modë editoriale për femrën moderne.</p>
+          <p className="mt-3 text-sm text-muted-foreground">{texts.footer_tagline}</p>
           <div className="flex items-center gap-3 mt-4">
             <a
               href={`https://wa.me/${WHATSAPP_NUMBER}`}

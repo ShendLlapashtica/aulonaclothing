@@ -5,6 +5,7 @@ import { ProductCard } from "@/components/product-card";
 import {
   useProducts,
   useCategories,
+  useSiteTexts,
   productsQueryOptions,
   categoriesQueryOptions,
 } from "@/lib/store";
@@ -39,6 +40,7 @@ export const Route = createFileRoute("/")({
 function Home() {
   const products = useProducts();
   const categories = useCategories();
+  const texts = useSiteTexts();
   const featured = products.slice(0, 8);
 
   const editorial = products[4] ?? products[0];
@@ -53,14 +55,14 @@ function Home() {
           <div className="order-2 md:order-1 flex items-center justify-center p-6 sm:p-10 md:p-20 bg-sand">
             <div className="max-w-md">
               <p className="text-[11px] tracking-[0.3em] uppercase text-muted-foreground mb-4 sm:mb-6">
-                Koleksioni i Verës · 2026
+                {texts.hero_eyebrow}
               </p>
               <h1 className="font-serif text-4xl sm:text-5xl md:text-6xl leading-[1.05]">
-                Plans for tonight?
+                {texts.hero_line1}
                 <span className="font-script text-caramel block text-5xl sm:text-6xl md:text-7xl mt-2">
-                  Find your perfect outfit
+                  {texts.hero_accent}
                 </span>
-                <span className="block mt-2">with us.</span>
+                <span className="block mt-2">{texts.hero_line3}</span>
               </h1>
               <div className="mt-6 sm:mt-8 flex flex-wrap gap-3">
                 <Link
@@ -174,13 +176,9 @@ function Home() {
                 Editoriale
               </p>
               <h2 className="font-serif text-4xl md:text-5xl mt-3 leading-tight">
-                Elegancë e <span className="font-script text-caramel">artizanuar</span> pa
-                përpjekje.
+                {texts.editorial_heading}
               </h2>
-              <p className="mt-6 text-muted-foreground leading-relaxed">
-                Çdo copë kalon nëpër duart tona përpara se të mbërrijë tek ju. Pëlhurat e zgjedhura,
-                prerjet e menduara dhe detajet e vogla janë ato që bëjnë Aulonaclothing.
-              </p>
+              <p className="mt-6 text-muted-foreground leading-relaxed">{texts.editorial_body}</p>
               <Link
                 to="/shop"
                 className="inline-block mt-8 border-b border-foreground pb-1 text-xs tracking-widest uppercase hover:text-caramel hover:border-caramel transition-colors"

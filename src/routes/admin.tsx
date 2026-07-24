@@ -4,6 +4,7 @@ import {
   Package,
   ShoppingCart,
   Truck,
+  Type,
   ArrowLeft,
   Lock,
   LogOut,
@@ -30,6 +31,7 @@ const links = [
   { to: "/admin/products", label: "Produktet", icon: Package },
   { to: "/admin/orders", label: "Porositë", icon: ShoppingCart },
   { to: "/admin/shipping", label: "Tarifat e Transportit", icon: Truck },
+  { to: "/admin/tekste", label: "Tekstet", icon: Type },
 ];
 
 function AdminLayout() {

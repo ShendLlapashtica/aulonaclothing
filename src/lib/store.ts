@@ -94,6 +94,27 @@ export function useRemoveProduct() {
   });
 }
 
+export function useUpdateProduct() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, patch }: { id: string; patch: Partial<Product> }) => {
+      const row: Record<string, unknown> = {};
+      if (patch.name !== undefined) row.name = patch.name;
+      if (patch.category !== undefined) row.category = patch.category;
+      if (patch.price !== undefined) row.price = patch.price;
+      if (patch.originalPrice !== undefined) row.original_price = patch.originalPrice;
+      if (patch.sizes !== undefined) row.sizes = patch.sizes;
+      if (patch.images !== undefined) row.images = patch.images;
+      if (patch.stock !== undefined) row.stock = patch.stock;
+      if (patch.isNew !== undefined) row.is_new = patch.isNew;
+      if (patch.onSale !== undefined) row.on_sale = patch.onSale;
+      const { error } = await supabase.from("products").update(row).eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["products"] }),
+  });
+}
+
 // ─────────────────────────────────────────────────────────────
 // Categories
 // ─────────────────────────────────────────────────────────────
@@ -138,6 +159,62 @@ export function useRemoveCategory() {
       if (error) throw error;
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["categories"] }),
+  });
+}
+
+// ─────────────────────────────────────────────────────────────
+// Site texts — editable homepage copy ("mottos")
+// ─────────────────────────────────────────────────────────────
+
+export const SITE_TEXT_KEYS = [
+  "hero_eyebrow",
+  "hero_line1",
+  "hero_accent",
+  "hero_line3",
+  "editorial_heading",
+  "editorial_body",
+  "footer_tagline",
+] as const;
+
+export type SiteTextKey = (typeof SITE_TEXT_KEYS)[number];
+
+const DEFAULT_SITE_TEXTS: Record<SiteTextKey, string> = {
+  hero_eyebrow: "Koleksioni i Verës · 2026",
+  hero_line1: "Plans for tonight?",
+  hero_accent: "Find your perfect outfit",
+  hero_line3: "with us.",
+  editorial_heading: "Elegancë e artizanuar pa përpjekje.",
+  editorial_body:
+    "Çdo copë kalon nëpër duart tona përpara se të mbërrijë tek ju. Pëlhurat e zgjedhura, prerjet e menduara dhe detajet e vogla janë ato që bëjnë Aulonaclothing.",
+  footer_tagline: "Modë editoriale për femrën moderne.",
+};
+
+async function fetchSiteTexts(): Promise<Record<string, string>> {
+  const { data, error } = await supabase.from("site_texts").select("key, value");
+  if (error) throw error;
+  const record: Record<string, string> = {};
+  for (const row of data ?? []) record[row.key] = row.value;
+  return record;
+}
+
+export const siteTextsQueryOptions = queryOptions({
+  queryKey: ["site-texts"],
+  queryFn: fetchSiteTexts,
+});
+
+export function useSiteTexts(): Record<SiteTextKey, string> {
+  const { data } = useQuery(siteTextsQueryOptions);
+  return { ...DEFAULT_SITE_TEXTS, ...data } as Record<SiteTextKey, string>;
+}
+
+export function useUpdateSiteText() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ key, value }: { key: SiteTextKey; value: string }) => {
+      const { error } = await supabase.from("site_texts").upsert({ key, value });
+      if (error) throw error;
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["site-texts"] }),
   });
 }
 
@@ -295,6 +372,17 @@ export function useUpdateOrderStatus() {
   return useMutation({
     mutationFn: async ({ id, status }: { id: string; status: string }) => {
       const { error } = await supabase.from("orders").update({ status }).eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["orders"] }),
+  });
+}
+
+export function useRemoveOrder() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from("orders").delete().eq("id", id);
       if (error) throw error;
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["orders"] }),

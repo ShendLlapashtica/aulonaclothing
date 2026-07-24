@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useProducts, useOrders, useShippingRates } from "@/lib/store";
-import { TrendingUp, Package, ShoppingBag, Euro } from "lucide-react";
+import { Package, ShoppingBag, Euro } from "lucide-react";
 import { Flag } from "@/components/flag";
 
 export const Route = createFileRoute("/admin/")({
@@ -25,7 +25,6 @@ function Overview() {
       icon: Package,
       trend: `${products.length} total`,
     },
-    { label: "Konversion", value: "3.8%", icon: TrendingUp, trend: "+0.4%" },
   ];
 
   return (
@@ -37,7 +36,7 @@ function Overview() {
         </h1>
       </div>
 
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
         {cards.map((c) => {
           const Icon = c.icon;
           return (

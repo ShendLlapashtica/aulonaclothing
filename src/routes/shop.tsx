@@ -3,7 +3,12 @@ import { useState } from "react";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { ProductCard } from "@/components/product-card";
-import { useProducts, useCategories } from "@/lib/store";
+import {
+  useProducts,
+  useCategories,
+  productsQueryOptions,
+  categoriesQueryOptions,
+} from "@/lib/store";
 import { z } from "zod";
 
 const searchSchema = z.object({
@@ -12,10 +17,19 @@ const searchSchema = z.object({
 
 export const Route = createFileRoute("/shop")({
   validateSearch: searchSchema,
+  loader: async ({ context }) => {
+    await Promise.all([
+      context.queryClient.ensureQueryData(productsQueryOptions),
+      context.queryClient.ensureQueryData(categoriesQueryOptions),
+    ]);
+  },
   head: () => ({
     meta: [
       { title: "Dyqani — Aulonaclothing" },
-      { name: "description", content: "Të gjithë koleksionin: fustane, sete, denim dhe bluza nga Aulonaclothing." },
+      {
+        name: "description",
+        content: "Të gjithë koleksionin: fustane, sete, denim dhe bluza nga Aulonaclothing.",
+      },
       { property: "og:title", content: "Dyqani — Aulonaclothing" },
       { property: "og:description", content: "Shiko koleksionin e plotë." },
     ],
@@ -49,9 +63,7 @@ function Shop() {
       <SiteHeader />
       <div className="mx-auto max-w-7xl px-4 sm:px-6 py-12">
         <div className="text-center mb-10">
-          <p className="text-[11px] tracking-[0.3em] uppercase text-muted-foreground">
-            Koleksioni
-          </p>
+          <p className="text-[11px] tracking-[0.3em] uppercase text-muted-foreground">Koleksioni</p>
           <h1 className="font-serif text-4xl sm:text-5xl md:text-6xl mt-2">
             <span className="font-script text-caramel">Aulona</span> Atelier
           </h1>
@@ -63,9 +75,7 @@ function Shop() {
               key={f.key}
               onClick={() => setActive(f.key)}
               className={`px-3 sm:px-4 py-2 text-[11px] sm:text-xs tracking-widest uppercase whitespace-nowrap transition-colors ${
-                active === f.key
-                  ? "bg-foreground text-background"
-                  : "hover:text-caramel"
+                active === f.key ? "bg-foreground text-background" : "hover:text-caramel"
               }`}
             >
               {f.label}
@@ -73,9 +83,7 @@ function Shop() {
           ))}
         </div>
 
-        <p className="text-xs text-muted-foreground mb-6">
-          {filtered.length} produkte
-        </p>
+        <p className="text-xs text-muted-foreground mb-6">{filtered.length} produkte</p>
 
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-10">
           {filtered.map((p) => (
@@ -90,7 +98,10 @@ function Shop() {
         )}
 
         <div className="mt-16 text-center">
-          <Link to="/" className="text-xs tracking-widest uppercase border-b border-foreground pb-1 hover:text-caramel hover:border-caramel">
+          <Link
+            to="/"
+            className="text-xs tracking-widest uppercase border-b border-foreground pb-1 hover:text-caramel hover:border-caramel"
+          >
             ← Kryefaqja
           </Link>
         </div>
@@ -99,4 +110,3 @@ function Shop() {
     </>
   );
 }
-

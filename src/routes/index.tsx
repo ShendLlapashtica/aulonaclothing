@@ -2,10 +2,21 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { ProductCard } from "@/components/product-card";
-import { useProducts, useCategories } from "@/lib/store";
+import {
+  useProducts,
+  useCategories,
+  productsQueryOptions,
+  categoriesQueryOptions,
+} from "@/lib/store";
 import heroImage from "@/assets/hero-blue-dress.png";
 
 export const Route = createFileRoute("/")({
+  loader: async ({ context }) => {
+    await Promise.all([
+      context.queryClient.ensureQueryData(productsQueryOptions),
+      context.queryClient.ensureQueryData(categoriesQueryOptions),
+    ]);
+  },
   head: () => ({
     meta: [
       { title: "Aulonaclothing — Koleksioni i Ri i Verës" },
@@ -30,7 +41,7 @@ function Home() {
   const categories = useCategories();
   const featured = products.slice(0, 8);
 
-  const editorial = products[4];
+  const editorial = products[4] ?? products[0];
 
   return (
     <>
@@ -128,29 +139,32 @@ function Home() {
       </section>
 
       {/* Editorial banner */}
-      <section className="bg-taupe">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 py-20 grid md:grid-cols-2 gap-12 items-center">
-          <img src={editorial.image} alt="" className="aspect-[3/4] object-cover w-full" />
-          <div>
-            <p className="text-[11px] tracking-[0.3em] uppercase text-muted-foreground">
-              Editoriale
-            </p>
-            <h2 className="font-serif text-4xl md:text-5xl mt-3 leading-tight">
-              Elegancë e <span className="font-script text-caramel">artizanuar</span> pa përpjekje.
-            </h2>
-            <p className="mt-6 text-muted-foreground leading-relaxed">
-              Çdo copë kalon nëpër duart tona përpara se të mbërrijë tek ju. Pëlhurat e zgjedhura,
-              prerjet e menduara dhe detajet e vogla janë ato që bëjnë Aulonaclothing.
-            </p>
-            <Link
-              to="/shop"
-              className="inline-block mt-8 border-b border-foreground pb-1 text-xs tracking-widest uppercase hover:text-caramel hover:border-caramel transition-colors"
-            >
-              Zbulo Historinë
-            </Link>
+      {editorial && (
+        <section className="bg-taupe">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 py-20 grid md:grid-cols-2 gap-12 items-center">
+            <img src={editorial.image} alt="" className="aspect-[3/4] object-cover w-full" />
+            <div>
+              <p className="text-[11px] tracking-[0.3em] uppercase text-muted-foreground">
+                Editoriale
+              </p>
+              <h2 className="font-serif text-4xl md:text-5xl mt-3 leading-tight">
+                Elegancë e <span className="font-script text-caramel">artizanuar</span> pa
+                përpjekje.
+              </h2>
+              <p className="mt-6 text-muted-foreground leading-relaxed">
+                Çdo copë kalon nëpër duart tona përpara se të mbërrijë tek ju. Pëlhurat e zgjedhura,
+                prerjet e menduara dhe detajet e vogla janë ato që bëjnë Aulonaclothing.
+              </p>
+              <Link
+                to="/shop"
+                className="inline-block mt-8 border-b border-foreground pb-1 text-xs tracking-widest uppercase hover:text-caramel hover:border-caramel transition-colors"
+              >
+                Zbulo Historinë
+              </Link>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       <SiteFooter />
     </>

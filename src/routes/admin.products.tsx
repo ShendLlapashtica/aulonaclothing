@@ -507,7 +507,7 @@ function AdminProducts() {
                     e.target.value = "";
                   }}
                 />
-                <div className="col-span-2 flex gap-2">
+                <div className="col-span-2">
                   <input
                     value={urlInput}
                     onChange={(e) => setUrlInput(e.target.value)}
@@ -518,15 +518,8 @@ function AdminProducts() {
                       }
                     }}
                     placeholder="ose ngjit URL https://... dhe shtyp Enter"
-                    className="flex-1 bg-transparent border border-border px-3 py-2 text-xs focus:outline-none focus:border-foreground"
+                    className="w-full bg-transparent border border-border px-3 py-2 text-xs focus:outline-none focus:border-foreground"
                   />
-                  <button
-                    type="button"
-                    onClick={addImageUrl}
-                    className="border border-border px-3 text-xs tracking-widest uppercase hover:bg-secondary transition-colors"
-                  >
-                    Shto
-                  </button>
                 </div>
               </div>
             </div>

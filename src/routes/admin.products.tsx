@@ -14,10 +14,39 @@ import type { Product } from "@/lib/products";
 import { Pencil, Trash2, Plus, X, Upload, Camera, Tag } from "lucide-react";
 import { toast } from "sonner";
 
+// Phone camera photos can be 3-8MB straight out of the input. Downscaling +
+// re-encoding here keeps Supabase Storage egress (billed on the free tier)
+// from being blown through by a handful of full-resolution uploads.
+const MAX_DIMENSION = 1600;
+const JPEG_QUALITY = 0.82;
+
+async function compressImage(file: File): Promise<Blob> {
+  const bitmap = await createImageBitmap(file).catch(() => null);
+  if (!bitmap) return file;
+
+  const scale = Math.min(1, MAX_DIMENSION / Math.max(bitmap.width, bitmap.height));
+  const width = Math.round(bitmap.width * scale);
+  const height = Math.round(bitmap.height * scale);
+
+  const canvas = document.createElement("canvas");
+  canvas.width = width;
+  canvas.height = height;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return file;
+  ctx.drawImage(bitmap, 0, 0, width, height);
+
+  const blob = await new Promise<Blob | null>((resolve) =>
+    canvas.toBlob(resolve, "image/jpeg", JPEG_QUALITY),
+  );
+  return blob && blob.size < file.size ? blob : file;
+}
+
 async function uploadProductImage(file: File): Promise<string> {
-  const ext = file.name.split(".").pop() || "jpg";
-  const path = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
-  const { error } = await supabase.storage.from("product-images").upload(path, file);
+  const compressed = await compressImage(file);
+  const path = `${Date.now()}-${Math.random().toString(36).slice(2)}.jpg`;
+  const { error } = await supabase.storage
+    .from("product-images")
+    .upload(path, compressed, { cacheControl: "31536000", contentType: "image/jpeg" });
   if (error) throw error;
   return supabase.storage.from("product-images").getPublicUrl(path).data.publicUrl;
 }

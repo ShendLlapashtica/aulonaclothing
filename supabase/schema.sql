@@ -181,25 +181,25 @@ insert into public.shipping_rates (country, label, flag, price) values
   ('MK', 'Maqedonia e Veriut', '🇲🇰', 5)
 on conflict (country) do nothing;
 
-insert into public.products (id, name, category, price, original_price, sizes, image, stock, is_new, on_sale) values
-  ('aul-01', 'Fustan Draperi Taupe me Çarje', 'Fustane', 19.99, null, array['S','M','L'], '/products/p1.jpg', 12, true, false),
-  ('aul-02', 'Xhins i Shkurtër i Grisur', 'Denim', 6.99, null, array['M'], '/products/p2.jpg', 24, false, false),
-  ('aul-03', 'Fustan Midi Bezhë me Drapim', 'Fustane', 9.99, 14.99, array['XS','M','L'], '/products/p3.jpg', 8, false, true),
-  ('aul-04', 'Set Bluzë e Bardhë & Capri', 'Sete', 14.99, null, array['S/M'], '/products/p4.jpg', 15, false, false),
-  ('aul-05', 'Fustan Midi Rozë Ballerinë', 'Fustane', 18.0, null, array['M'], '/products/p5.jpg', 6, true, false),
-  ('aul-06', 'Set i Bardhë Elegant', 'Sete', 19.99, null, array['S'], '/products/p6.png', 9, false, false),
-  ('aul-07', 'Bluzë Pelerinë me Pantallona Taupe', 'Bluza', 14.99, null, array['46'], '/products/p7.jpg', 5, false, false),
-  ('aul-08', 'Fustan Saten Burgundy', 'Fustane', 16.0, null, array['S'], '/products/p8.jpg', 11, false, false),
-  ('aul-09', 'Fustan Midi Saten i Zi', 'Fustane', 12.99, null, array['44'], '/products/p9.jpg', 7, false, false),
-  ('aul-10', 'Fustan Saten Karamel me Cowl', 'Fustane', 19.99, null, array['42'], '/products/p10.jpg', 4, true, false),
-  ('aul-11', 'Fustan Kafe Draperi me Njërën Krah', 'Fustane', 11.99, null, array['42'], '/products/np2.png', 6, true, false),
-  ('aul-12', 'Fustan Aquarelle Rozë Asimetrik', 'Fustane', 11.99, null, array['S'], '/products/np3.png', 8, true, false),
-  ('aul-13', 'Pantallona Sateni Blu të Gjera', 'Pantallona', 11.99, null, array['M'], '/products/np4.png', 10, true, false),
-  ('aul-14', 'Kombinezon Krem pa Krahë', 'Kombinezone', 11.99, null, array['XS'], '/products/np5.png', 7, true, false),
-  ('aul-15', 'Fustan Rozë Fuchsia me Volan', 'Fustane', 11.99, null, array['L'], '/products/np6.png', 5, true, false),
-  ('aul-16', 'Fustan Mini Blu me Volane', 'Fustane', 11.99, null, array['L'], '/products/np7.png', 6, true, false),
-  ('aul-17', 'Kombinezon Dantelle (Blu & e Zezë)', 'Kombinezone', 11.99, null, array['XS'], '/products/np8.png', 9, true, false),
-  ('aul-18', 'Kombinezon Sportiv Taupe me Zinxhir', 'Kombinezone', 11.99, null, array['XS'], '/products/np9.png', 8, true, false),
-  ('aul-19', 'Fustan Maxi Kafe Njërën Krah', 'Fustane', 11.99, null, array['S'], '/products/np10.png', 7, true, false),
-  ('aul-20', 'Fustan i Zi Transparent për Plazh', 'Fustane', 11.99, null, array['XS'], '/products/np11.png', 5, true, false)
+insert into public.products (id, name, category, price, original_price, sizes, images, stock, is_new, on_sale) values
+  ('aul-01', 'Fustan Draperi Taupe me Çarje', 'Fustane', 19.99, null, array['S','M','L'], array['/products/p1.jpg'], 12, true, false),
+  ('aul-02', 'Xhins i Shkurtër i Grisur', 'Denim', 6.99, null, array['M'], array['/products/p2.jpg'], 24, false, false),
+  ('aul-03', 'Fustan Midi Bezhë me Drapim', 'Fustane', 9.99, 14.99, array['XS','M','L'], array['/products/p3.jpg'], 8, false, true),
+  ('aul-04', 'Set Bluzë e Bardhë & Capri', 'Sete', 14.99, null, array['S/M'], array['/products/p4.jpg'], 15, false, false),
+  ('aul-05', 'Fustan Midi Rozë Ballerinë', 'Fustane', 18.0, null, array['M'], array['/products/p5.jpg'], 6, true, false),
+  ('aul-06', 'Set i Bardhë Elegant', 'Sete', 19.99, null, array['S'], array['/products/p6.png'], 9, false, false),
+  ('aul-07', 'Bluzë Pelerinë me Pantallona Taupe', 'Bluza', 14.99, null, array['46'], array['/products/p7.jpg'], 5, false, false),
+  ('aul-08', 'Fustan Saten Burgundy', 'Fustane', 16.0, null, array['S'], array['/products/p8.jpg'], 11, false, false),
+  ('aul-09', 'Fustan Midi Saten i Zi', 'Fustane', 12.99, null, array['44'], array['/products/p9.jpg'], 7, false, false),
+  ('aul-10', 'Fustan Saten Karamel me Cowl', 'Fustane', 19.99, null, array['42'], array['/products/p10.jpg'], 4, true, false),
+  ('aul-11', 'Fustan Kafe Draperi me Njërën Krah', 'Fustane', 11.99, null, array['42'], array['/products/np2.png'], 6, true, false),
+  ('aul-12', 'Fustan Aquarelle Rozë Asimetrik', 'Fustane', 11.99, null, array['S'], array['/products/np3.png'], 8, true, false),
+  ('aul-13', 'Pantallona Sateni Blu të Gjera', 'Pantallona', 11.99, null, array['M'], array['/products/np4.png'], 10, true, false),
+  ('aul-14', 'Kombinezon Krem pa Krahë', 'Kombinezone', 11.99, null, array['XS'], array['/products/np5.png'], 7, true, false),
+  ('aul-15', 'Fustan Rozë Fuchsia me Volan', 'Fustane', 11.99, null, array['L'], array['/products/np6.png'], 5, true, false),
+  ('aul-16', 'Fustan Mini Blu me Volane', 'Fustane', 11.99, null, array['L'], array['/products/np7.png'], 6, true, false),
+  ('aul-17', 'Kombinezon Dantelle (Blu & e Zezë)', 'Kombinezone', 11.99, null, array['XS'], array['/products/np8.png'], 9, true, false),
+  ('aul-18', 'Kombinezon Sportiv Taupe me Zinxhir', 'Kombinezone', 11.99, null, array['XS'], array['/products/np9.png'], 8, true, false),
+  ('aul-19', 'Fustan Maxi Kafe Njërën Krah', 'Fustane', 11.99, null, array['S'], array['/products/np10.png'], 7, true, false),
+  ('aul-20', 'Fustan i Zi Transparent për Plazh', 'Fustane', 11.99, null, array['XS'], array['/products/np11.png'], 5, true, false)
 on conflict (id) do nothing;
